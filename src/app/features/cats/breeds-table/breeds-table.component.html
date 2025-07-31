@@ -1,0 +1,92 @@
+<div class="breeds-table-container">
+  <div class="table-header">
+    <h2>Tabla de Razas de Gatos</h2>
+
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-label>Buscar razas</mat-label>
+      <input
+        matInput
+        [(ngModel)]="searchQuery"
+        (ngModelChange)="applyFilter()"
+        placeholder="Filtrar por nombre, origen o temperamento"
+      >
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+  </div>
+
+  <div class="table-wrapper">
+    <mat-progress-spinner
+      *ngIf="isLoading"
+      diameter="50"
+      mode="indeterminate"
+      class="spinner"
+    ></mat-progress-spinner>
+
+    <div *ngIf="error" class="error-message">
+      <mat-icon>error_outline</mat-icon>
+      <span>{{ error }}</span>
+    </div>
+
+    <table mat-table [dataSource]="paginatedBreeds" *ngIf="!isLoading">
+      <!-- Nombre Columna -->
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>Nombre</th>
+        <td mat-cell *matCellDef="let breed">{{ breed.name }}</td>
+      </ng-container>
+
+      <!-- Origen Columna -->
+      <ng-container matColumnDef="origin">
+        <th mat-header-cell *matHeaderCellDef>Origen</th>
+        <td mat-cell *matCellDef="let breed">{{ breed.origin || 'Desconocido' }}</td>
+      </ng-container>
+
+      <!-- Temperamento Columna -->
+      <ng-container matColumnDef="temperament">
+        <th mat-header-cell *matHeaderCellDef>Temperamento</th>
+        <td mat-cell *matCellDef="let breed">
+          {{ breed.temperament | truncate:50 }}
+        </td>
+      </ng-container>
+
+      <!-- Esperanza de Vida Columna -->
+      <ng-container matColumnDef="lifeSpan">
+        <th mat-header-cell *matHeaderCellDef>Vida Promedio</th>
+        <td mat-cell *matCellDef="let breed">
+          {{ breed.life_span || 'N/A' }}
+        </td>
+      </ng-container>
+
+      <!-- Acciones Columna -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Acciones</th>
+        <td mat-cell *matCellDef="let breed">
+          <button
+            mat-icon-button
+            color="primary"
+            [routerLink]="['/cats', breed.id]"
+            matTooltip="Ver detalles"
+          >
+            <mat-icon>visibility</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+
+    <mat-paginator
+      *ngIf="!isLoading && filteredBreeds.length > 0"
+      [length]="totalBreeds"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="[5, 10, 20]"
+      (page)="onPageChange($event)"
+      aria-label="Seleccionar página"
+    ></mat-paginator>
+
+    <div *ngIf="!isLoading && filteredBreeds.length === 0" class="no-results">
+      <mat-icon>pets</mat-icon>
+      <p>No se encontraron razas que coincidan con tu búsqueda</p>
+    </div>
+  </div>
+</div>

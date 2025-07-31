@@ -1,0 +1,84 @@
+@import '../../../../styles/variables.scss';
+
+.breeds-table-container {
+  padding: 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  .table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+
+    h2 {
+      margin: 0;
+      color: $primary-color;
+    }
+
+    .search-field {
+      min-width: 300px;
+      width: 100%;
+      max-width: 400px;
+    }
+  }
+
+  .table-wrapper {
+    position: relative;
+    min-height: 300px;
+
+    .spinner {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .error-message {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: $error-color;
+      padding: 1rem;
+      background-color: rgba($error-color, 0.1);
+      border-radius: 4px;
+      margin: 1rem 0;
+    }
+
+    .no-results {
+      text-align: center;
+      padding: 2rem;
+      color: rgba(0, 0, 0, 0.6);
+
+      mat-icon {
+        font-size: 48px;
+        width: 48px;
+        height: 48px;
+        margin-bottom: 1rem;
+        color: $primary-color;
+      }
+
+      p {
+        margin: 0;
+        font-size: 1.1rem;
+      }
+    }
+
+    table {
+      width: 100%;
+      margin-bottom: 1rem;
+
+      th {
+        font-weight: bold;
+        background-color: #f5f5f5;
+      }
+
+      .mat-column-actions {
+        width: 80px;
+        text-align: center;
+      }
+    }
+  }
+}

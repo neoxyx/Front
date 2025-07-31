@@ -1,0 +1,46 @@
+<mat-card *ngIf="!isLoading" class="profile-card">
+  <mat-card-header>
+    <div mat-card-avatar class="profile-avatar">
+      <mat-icon>account_circle</mat-icon>
+    </div>
+    <mat-card-title>{{ user?.name }}</mat-card-title>
+    <mat-card-subtitle>Perfil de usuario</mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-divider></mat-divider>
+
+  <mat-card-content>
+    <mat-list>
+      <mat-list-item>
+        <mat-icon matListItemIcon>email</mat-icon>
+        <div matListItemTitle>Email</div>
+        <div matListItemLine>{{ user?.email }}</div>
+      </mat-list-item>
+
+      <mat-list-item>
+        <mat-icon matListItemIcon>calendar_today</mat-icon>
+        <div matListItemTitle>Miembro desde</div>
+        <div matListItemLine>{{ user?.createdAt | date: 'longDate':'':'es' }}</div>
+      </mat-list-item>
+    </mat-list>
+  </mat-card-content>
+
+  <mat-card-actions>
+    <button
+      mat-raised-button
+      color="primary"
+      routerLink="/cats"
+    >
+      Ver Razas de Gatos
+    </button>
+    <button
+      mat-raised-button
+      color="warn"
+      (click)="logout()"
+    >
+      Cerrar Sesión
+    </button>
+  </mat-card-actions>
+</mat-card>
+
+<app-loading-spinner *ngIf="isLoading"></app-loading-spinner>
