@@ -1,1 +1,118 @@
-<p>breed-detail works!</p>
+<div class="breed-detail-container" *ngIf="breed">
+  <div class="breed-header">
+    <h1 class="breed-name">{{ breed.name }}</h1>
+    <span class="breed-origin">{{ breed.origin }}</span>
+  </div>
+
+  <div class="breed-content">
+    <!-- Sección de imagen principal -->
+    <div class="breed-image-section">
+      <img
+        *ngIf="breed.image?.url"
+        [src]="breed.image?.url"
+        [alt]="'Imagen de ' + breed.name"
+        class="main-image"
+      >
+      <div *ngIf="!breed.image?.url" class="image-placeholder">
+        No hay imagen disponible
+      </div>
+    </div>
+
+    <!-- Sección de información básica -->
+    <div class="breed-info-section">
+      <div class="info-card">
+        <h3 class="section-title">Descripción</h3>
+        <p class="breed-description">{{ breed.description }}</p>
+      </div>
+
+      <div class="info-card">
+        <h3 class="section-title">Características</h3>
+        <div class="characteristics-grid">
+          <div class="characteristic">
+            <span class="label">Peso:</span>
+            <span class="value">{{ getWeightInKg() }} kg</span>
+          </div>
+          <div class="characteristic">
+            <span class="label">Esperanza de vida:</span>
+            <span class="value">{{ breed.life_span }} años</span>
+          </div>
+          <div class="characteristic">
+            <span class="label">Temperamento:</span>
+            <div class="temperament-tags">
+              <span *ngFor="let trait of temperamentList" class="temperament-tag">{{ trait }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sección de puntuaciones -->
+    <div class="info-card scores-section">
+      <h3 class="section-title">Puntuaciones</h3>
+      <div class="scores-grid">
+        <div class="score-item">
+          <span class="score-label">Adaptabilidad</span>
+          <div class="score-bar">
+            <div class="score-fill" [style.width.%]="breed.adaptability * 20"></div>
+          </div>
+          <span class="score-value">{{ breed.adaptability }}/5</span>
+        </div>
+        <div class="score-item">
+          <span class="score-label">Nivel de afecto</span>
+          <div class="score-bar">
+            <div class="score-fill" [style.width.%]="breed.affection_level * 20"></div>
+          </div>
+          <span class="score-value">{{ breed.affection_level }}/5</span>
+        </div>
+        <div class="score-item">
+          <span class="score-label">Amigable con niños</span>
+          <div class="score-bar">
+            <div class="score-fill" [style.width.%]="breed.child_friendly * 20"></div>
+          </div>
+          <span class="score-value">{{ breed.child_friendly }}/5</span>
+        </div>
+        <div class="score-item">
+          <span class="score-label">Amigable con perros</span>
+          <div class="score-bar">
+            <div class="score-fill" [style.width.%]="breed.dog_friendly * 20"></div>
+          </div>
+          <span class="score-value">{{ breed.dog_friendly }}/5</span>
+        </div>
+        <div class="score-item">
+          <span class="score-label">Nivel de energía</span>
+          <div class="score-bar">
+            <div class="score-fill" [style.width.%]="breed.energy_level * 20"></div>
+          </div>
+          <span class="score-value">{{ breed.energy_level }}/5</span>
+        </div>
+        <div class="score-item">
+          <span class="score-label">Necesidad de aseo</span>
+          <div class="score-bar">
+            <div class="score-fill" [style.width.%]="breed.grooming * 20"></div>
+          </div>
+          <span class="score-value">{{ breed.grooming }}/5</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sección de enlaces adicionales -->
+    <div *ngIf="breed.cfa_url || breed.vetstreet_url || breed.vcahospitals_url" class="info-card links-section">
+      <h3 class="section-title">Más información</h3>
+      <div class="external-links">
+        <a *ngIf="breed.cfa_url" [href]="breed.cfa_url" target="_blank" class="external-link">
+          CFA (Cat Fanciers' Association)
+        </a>
+        <a *ngIf="breed.vetstreet_url" [href]="breed.vetstreet_url" target="_blank" class="external-link">
+          Vetstreet
+        </a>
+        <a *ngIf="breed.vcahospitals_url" [href]="breed.vcahospitals_url" target="_blank" class="external-link">
+          VCA Hospitals
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="!breed" class="no-breed-selected">
+  <p>No se ha seleccionado ninguna raza para mostrar</p>
+</div>
