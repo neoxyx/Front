@@ -4,7 +4,7 @@ import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { CommonModule } from '@angular/common';
 import { LoadingSpinnerComponent } from '../../../shared/components/loading-spinner/loading-spinner.component';
-import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
+import { debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs';
 
 @Component({
   selector: 'app-register',
@@ -14,27 +14,29 @@ import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
   styleUrls: ['./register.component.scss']
 })
 export class RegisterComponent {
-  registerForm = this.fb.group({
-    name: ['', [Validators.required, Validators.minLength(3)]],
-    email: ['', [Validators.required, Validators.email], [this.validateEmailAvailability.bind(this)]],
-    password: ['', [Validators.required, Validators.minLength(6)]],
-    confirmPassword: ['', Validators.required]
-  }, { validators: this.passwordMatchValidator });
+  registerForm: any;
 
   isLoading = false;
   errorMessage = '';
   emailAvailable: boolean | null = null;
 
   constructor(
-    private fb: FormBuilder,
-    private authService: AuthService,
-    private router: Router
-  ) {}
+    private readonly fb: FormBuilder,
+    private readonly authService: AuthService,
+    private readonly router: Router
+  ) {
+    this.registerForm = this.fb.group({
+      name: ['', [Validators.required, Validators.minLength(3)]],
+      email: ['', [Validators.required, Validators.email], [this.validateEmailAvailability.bind(this)]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      confirmPassword: ['', Validators.required]
+    }, { validators: this.passwordMatchValidator });
+  }
 
   // Validador personalizado para coincidencia de contraseñas
   passwordMatchValidator(form: any) {
-    return form.get('password').value === form.get('confirmPassword').value 
-      ? null 
+    return form.get('password').value === form.get('confirmPassword').value
+      ? null
       : { mismatch: true };
   }
 

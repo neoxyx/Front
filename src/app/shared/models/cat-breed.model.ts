@@ -3,7 +3,7 @@
  */
 export interface CatBreed {
   /** ID único de la raza */
-  id: string;
+  breedId: string;
 
   /** Nombre de la raza */
   name: string;

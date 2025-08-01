@@ -7,7 +7,7 @@
       <mat-label>Selecciona una raza</mat-label>
       <mat-select (selectionChange)="onBreedSelected($event.value)" [disabled]="isLoading">
         <mat-option>-- Selecciona --</mat-option>
-        <mat-option *ngFor="let breed of breeds" [value]="breed.id">
+        <mat-option *ngFor="let breed of breeds" [value]="breed.breedId">
           {{ breed.name }}
         </mat-option>
       </mat-select>

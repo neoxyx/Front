@@ -11,6 +11,7 @@ export class CatsService {
   private readonly catApiKey = environment.catApiKey;
   private imageCache: { [breedId: string]: CatImage[] } = {};
   private breedsCache$?: Observable<CatBreed[]>;
+  private breedCache: { [id: string]: CatBreed } = {};
   private lastFetchTime = 0;
   private readonly CACHE_TTL = 30 * 60 * 1000; // 30 minutos en milisegundos
 
@@ -35,6 +36,24 @@ export class CatsService {
     return this.breedsCache$;
   }
 
+  getBreedById(breedId: string): Observable<CatBreed> {
+    // Verificar si hay caché válido para este ID específico
+    if (this.breedCache[breedId] && !this.isCacheExpired()) {
+      return of(this.breedCache[breedId]);
+    }
+
+    return this.http.get<any>(`${this.apiUrl}/cats/breeds/${breedId}`, {
+      headers: { 'x-api-key': this.catApiKey }
+    }).pipe(
+      map(breed => this.transformBreed(breed)), // Transforma un solo objeto
+      tap(breed => {
+        this.breedCache[breedId] = breed; // Almacena en caché individual
+        this.lastFetchTime = Date.now();
+      }),
+      catchError(error => this.handleError(`Error al obtener la raza con ID ${breedId}`, error))
+    );
+  }
+
   /**
    * Transforma los datos de la API al modelo CatBreed
    * @param breeds Datos crudos de la API
@@ -42,7 +61,7 @@ export class CatsService {
    */
   private transformBreeds(breeds: any[]): CatBreed[] {
     return breeds.map(breed => ({
-      id: breed.id,
+      breedId: breed.breedId,
       name: breed.name,
       description: breed.description || 'Descripción no disponible',
       origin: breed.origin || 'Origen desconocido',
@@ -64,6 +83,34 @@ export class CatsService {
       } : undefined
     } as CatBreed));
   }
+
+  private transformBreed(breed: any): CatBreed {
+    return {
+      breedId: breed.breed,
+      name: breed.name,
+      description: breed.description,
+      origin: '',
+      temperament: '',
+      life_span: '',
+      weight: {
+        imperial: '',
+        metric: ''
+      },
+      adaptability: 0,
+      affection_level: 0,
+      child_friendly: 0,
+      dog_friendly: 0,
+      energy_level: 0,
+      grooming: 0,
+      health_issues: 0,
+      intelligence: 0,
+      shedding_level: 0,
+      social_needs: 0,
+      stranger_friendly: 0,
+      vocalisation: 0
+    };
+  }
+
 
   /**
    * Verifica si el caché ha expirado
@@ -133,7 +180,7 @@ export class CatsService {
       width: img.width || 0,
       height: img.height || 0,
       breeds: img.breeds ? [{
-        id: img.breeds[0]?.id,
+        breedId: img.breeds[0]?.id,
         name: img.breeds[0]?.name
       }] : []
     } as CatImage));

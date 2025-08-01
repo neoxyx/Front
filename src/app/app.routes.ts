@@ -19,6 +19,11 @@ export const routes: Routes = [
         path: 'table',
         loadComponent: () => import('./features/cats/breeds-table/breeds-table.component')
           .then(m => m.BreedsTableComponent)
+      },
+      {
+        path: 'detail/:breedId',
+        loadComponent: () => import('./features/cats/breed-detail/breed-detail.component')
+          .then(m => m.BreedDetailComponent)
       }
     ]
   },

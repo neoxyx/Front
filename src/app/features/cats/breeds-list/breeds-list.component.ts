@@ -84,11 +84,11 @@ export class BreedsListComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const breed = this.breeds.find(b => b.id === breedId);
+    const breed = this.breeds.find(b => b.breedId === breedId);
     if (breed) {
       this.selectedBreed = breed;
       this.currentImageIndex = 0;
-      this.loadBreedImages(breed.id);
+      this.loadBreedImages(breed.breedId);
     }
   }
 
