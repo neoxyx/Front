@@ -1,137 +1,130 @@
-<div class="breeds-container">
-  <!-- Título y selector de raza -->
-  <div class="breeds-header">
-    <h1>Razas de Gatos</h1>
+<a [routerLink]="['/']" matTooltip="Vista 1">Lista</a> |
+<a [routerLink]="['/cats/table/']" matTooltip="Vista 2">Tabla</a> |
+<a [routerLink]="['/login/']" matTooltip="Vista 3">Login</a> |
+<a [routerLink]="['/register/']" matTooltip="Vista 4">registro</a>
+  <div class="breeds-container">
+    <!-- Título y selector de raza -->
+    <div class="breeds-header">
+      <h1>Razas de Gatos</h1>
 
-    <mat-form-field appearance="fill" class="breed-selector">
-      <mat-label>Selecciona una raza</mat-label>
-      <mat-select (selectionChange)="onBreedSelected($event.value)" [disabled]="isLoading">
-        <mat-option>-- Selecciona --</mat-option>
-        <mat-option *ngFor="let breed of breeds" [value]="breed.breedId">
-          {{ breed.name }}
-        </mat-option>
-      </mat-select>
-      <mat-hint *ngIf="isLoading">Cargando razas...</mat-hint>
-    </mat-form-field>
-  </div>
+      <mat-form-field appearance="fill" class="breed-selector">
+        <mat-label>Selecciona una raza</mat-label>
+        <mat-select (selectionChange)="onBreedSelected($event.value)" [disabled]="isLoading">
+          <mat-option>-- Selecciona --</mat-option>
+          <mat-option *ngFor="let breed of breeds" [value]="breed.breedId">
+            {{ breed.name }}
+          </mat-option>
+        </mat-select>
+        <mat-hint *ngIf="isLoading">Cargando razas...</mat-hint>
+      </mat-form-field>
+    </div>
 
-  <!-- Estado de carga -->
-  <mat-progress-bar
-    *ngIf="isLoading"
-    mode="indeterminate"
-    class="loading-bar"
-  ></mat-progress-bar>
+    <!-- Estado de carga -->
+    <mat-progress-bar *ngIf="isLoading" mode="indeterminate" class="loading-bar"></mat-progress-bar>
 
-  <!-- Mensaje de error -->
-  <div *ngIf="error" class="error-message mat-elevation-z2">
-    <mat-icon>error</mat-icon>
-    <span>{{ error }}</span>
-    <button mat-stroked-button color="warn" (click)="loadBreeds()">
-      <mat-icon>refresh</mat-icon>
-      Reintentar
-    </button>
-  </div>
+    <!-- Mensaje de error -->
+    <div *ngIf="error" class="error-message mat-elevation-z2">
+      <mat-icon>error</mat-icon>
+      <span>{{ error }}</span>
+      <button mat-stroked-button color="warn" (click)="loadBreeds()">
+        <mat-icon>refresh</mat-icon>
+        Reintentar
+      </button>
+    </div>
 
-  <!-- Detalle de la raza seleccionada -->
-  <div *ngIf="selectedBreed && !isLoading" @fadeIn class="breed-detail-card mat-elevation-z4">
-    <div class="breed-image-section">
-      <!-- Carrusel de imágenes -->
-      <div class="image-carousel">
-        <button mat-icon-button (click)="prevImage()" class="nav-button prev">
-          <mat-icon>chevron_left</mat-icon>
-        </button>
+    <!-- Detalle de la raza seleccionada -->
+    <div *ngIf="selectedBreed && !isLoading" @fadeIn class="breed-detail-card mat-elevation-z4">
+      <div class="breed-image-section">
+        <!-- Carrusel de imágenes -->
+        <div class="image-carousel">
+          <button mat-icon-button (click)="prevImage()" class="nav-button prev">
+            <mat-icon>chevron_left</mat-icon>
+          </button>
 
-        <img
-          [src]="selectedBreed.images?.[currentImageIndex]?.url || 'https://cdn2.thecatapi.com/images/h19-vtIeX.jpg'"
-          [alt]="selectedBreed.name"
-          class="breed-image"
-          [class.loaded]="!imageLoading"
-          (load)="onImageLoad()"
-          (error)="onImageError()"
-        >
+          <img
+            [src]="selectedBreed.images?.[currentImageIndex]?.url || 'https://cdn2.thecatapi.com/images/h19-vtIeX.jpg'"
+            [alt]="selectedBreed.name" class="breed-image" [class.loaded]="!imageLoading" (load)="onImageLoad()"
+            (error)="onImageError()">
 
-        <button mat-icon-button (click)="nextImage()" class="nav-button next">
-          <mat-icon>chevron_right</mat-icon>
-        </button>
+          <button mat-icon-button (click)="nextImage()" class="nav-button next">
+            <mat-icon>chevron_right</mat-icon>
+          </button>
 
-        <div class="image-counter">
-          {{ currentImageIndex + 1 }} / {{ selectedBreed.images?.length || 0 }}
+          <div class="image-counter">
+            {{ currentImageIndex + 1 }} / {{ selectedBreed.images?.length || 0 }}
+          </div>
+        </div>
+      </div>
+
+      <div class="breed-info-section">
+        <h2>{{ selectedBreed.name }}</h2>
+
+        <!-- Características principales -->
+        <div class="breed-meta">
+          <div class="meta-item">
+            <mat-icon>place</mat-icon>
+            <span><strong>Origen:</strong> {{ selectedBreed.origin || 'Desconocido' }}</span>
+          </div>
+
+          <div class="meta-item">
+            <mat-icon>schedule</mat-icon>
+            <span><strong>Vida promedio:</strong> {{ selectedBreed.life_span }} años</span>
+          </div>
+
+          <div class="meta-item">
+            <mat-icon>psychology</mat-icon>
+            <span><strong>Inteligencia:</strong>
+              <mat-progress-bar mode="determinate" [value]="selectedBreed.intelligence * 20"></mat-progress-bar>
+              {{ selectedBreed.intelligence }}/5
+            </span>
+          </div>
+        </div>
+
+        <!-- Temperamento -->
+        <div class="temperament-section">
+          <h3>Temperamento</h3>
+          <mat-chip-listbox>
+            <mat-chip *ngFor="let trait of getTraits(selectedBreed.temperament)">
+              {{ trait }}
+            </mat-chip>
+          </mat-chip-listbox>
+        </div>
+
+        <!-- Descripción -->
+        <div class="description-section">
+          <h3>Descripción</h3>
+          <p>{{ selectedBreed.description || 'No hay descripción disponible.' }}</p>
+        </div>
+
+        <!-- Características físicas -->
+        <div class="physical-traits">
+          <h3>Características</h3>
+          <div class="traits-grid">
+            <div class="trait-item">
+              <mat-icon>straighten</mat-icon>
+              <span><strong>Tamaño:</strong> {{ selectedBreed.weight.metric }} kg</span>
+            </div>
+            <div class="trait-item">
+              <mat-icon>wb_sunny</mat-icon>
+              <span><strong>Adaptabilidad:</strong> {{ selectedBreed.adaptability }}/5</span>
+            </div>
+            <div class="trait-item">
+              <mat-icon>favorite</mat-icon>
+              <span><strong>Afecto:</strong> {{ selectedBreed.affection_level }}/5</span>
+            </div>
+            <div class="trait-item">
+              <mat-icon>child_friendly</mat-icon>
+              <span><strong>Niños:</strong> {{ selectedBreed.child_friendly }}/5</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="breed-info-section">
-      <h2>{{ selectedBreed.name }}</h2>
-
-      <!-- Características principales -->
-      <div class="breed-meta">
-        <div class="meta-item">
-          <mat-icon>place</mat-icon>
-          <span><strong>Origen:</strong> {{ selectedBreed.origin || 'Desconocido' }}</span>
-        </div>
-
-        <div class="meta-item">
-          <mat-icon>schedule</mat-icon>
-          <span><strong>Vida promedio:</strong> {{ selectedBreed.life_span }} años</span>
-        </div>
-
-        <div class="meta-item">
-          <mat-icon>psychology</mat-icon>
-          <span><strong>Inteligencia:</strong>
-            <mat-progress-bar
-              mode="determinate"
-              [value]="selectedBreed.intelligence * 20"
-            ></mat-progress-bar>
-            {{ selectedBreed.intelligence }}/5
-          </span>
-        </div>
-      </div>
-
-      <!-- Temperamento -->
-      <div class="temperament-section">
-        <h3>Temperamento</h3>
-        <mat-chip-listbox>
-          <mat-chip *ngFor="let trait of getTraits(selectedBreed.temperament)">
-            {{ trait }}
-          </mat-chip>
-        </mat-chip-listbox>
-      </div>
-
-      <!-- Descripción -->
-      <div class="description-section">
-        <h3>Descripción</h3>
-        <p>{{ selectedBreed.description || 'No hay descripción disponible.' }}</p>
-      </div>
-
-      <!-- Características físicas -->
-      <div class="physical-traits">
-        <h3>Características</h3>
-        <div class="traits-grid">
-          <div class="trait-item">
-            <mat-icon>straighten</mat-icon>
-            <span><strong>Tamaño:</strong> {{ selectedBreed.weight.metric }} kg</span>
-          </div>
-          <div class="trait-item">
-            <mat-icon>wb_sunny</mat-icon>
-            <span><strong>Adaptabilidad:</strong> {{ selectedBreed.adaptability }}/5</span>
-          </div>
-          <div class="trait-item">
-            <mat-icon>favorite</mat-icon>
-            <span><strong>Afecto:</strong> {{ selectedBreed.affection_level }}/5</span>
-          </div>
-          <div class="trait-item">
-            <mat-icon>child_friendly</mat-icon>
-            <span><strong>Niños:</strong> {{ selectedBreed.child_friendly }}/5</span>
-          </div>
-        </div>
-      </div>
+    <!-- Mensaje cuando no hay selección -->
+    <div *ngIf="!selectedBreed && !isLoading && !error" class="no-selection mat-elevation-z2">
+      <mat-icon>pets</mat-icon>
+      <h3>Selecciona una raza para ver sus detalles</h3>
+      <p>Explora entre más de {{ breeds.length }} razas diferentes</p>
     </div>
   </div>
-
-  <!-- Mensaje cuando no hay selección -->
-  <div *ngIf="!selectedBreed && !isLoading && !error" class="no-selection mat-elevation-z2">
-    <mat-icon>pets</mat-icon>
-    <h3>Selecciona una raza para ver sus detalles</h3>
-    <p>Explora entre más de {{ breeds.length }} razas diferentes</p>
-  </div>
-</div>
