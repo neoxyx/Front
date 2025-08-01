@@ -146,17 +146,25 @@ export class CatsService {
    * @param forceRefresh Ignorar caché y forzar nueva petición (default: false)
    * @returns Observable con array de CatImage
    */
-  getBreedImages(breedId: string, limit: number = 1, forceRefresh: boolean = false): Observable<CatImage[]> {
+  getBreedImages(
+    breedId: string,
+    limit: number = 1,
+    forceRefresh: boolean = false
+  ): Observable<CatImage[]> {
     // Verificar caché primero
     if (this.imageCache[breedId] && !forceRefresh) {
       return of(this.imageCache[breedId].slice(0, limit));
     }
 
-    return this.http.get<any[]>(`${this.apiUrl}/imagesbybreedid/${breedId}`, {
+    return this.http.get<any>(`${this.apiUrl}/images/imagesbybreedid/${breedId}`, {
       params: { limit: limit.toString() },
       headers: { 'x-api-key': this.catApiKey }
     }).pipe(
-      map(images => this.transformImages(images)),
+      map(response => {
+        // Asegúrate de extraer el array de imágenes correctamente
+        const images = response?.data?.images || [];
+        return this.transformImages(images);
+      }),
       tap(images => {
         // Almacenar en caché
         this.imageCache[breedId] = images;
