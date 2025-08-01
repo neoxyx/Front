@@ -42,9 +42,10 @@
         </button>
 
         <img
-          [src]="selectedBreed.images?.[currentImageIndex]?.url || 'assets/default-cat.jpg'"
+          [src]="selectedBreed.images?.[currentImageIndex]?.url || 'https://cdn2.thecatapi.com/images/h19-vtIeX.jpg'"
           [alt]="selectedBreed.name"
           class="breed-image"
+          [class.loaded]="!imageLoading"
           (load)="onImageLoad()"
           (error)="onImageError()"
         >
