@@ -1,9 +1,9 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { BehaviorSubject, catchError, Observable, tap, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, map, Observable, tap, throwError } from 'rxjs';
 import { environment } from '../../../environments/environment'
-import { User } from '../../shared/models/user.model'
+import { User, UserResponse } from '../../shared/models/user.model'
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly http = inject(HttpClient);
@@ -42,8 +42,9 @@ export class AuthService {
    * @returns Observable con el usuario autenticado
    */
   login(email: string, password: string): Observable<User> {
-    return this.http.post<User>(`${environment.apiUrl}/users/login`, { email, password })
+    return this.http.post<UserResponse<User>>(`${environment.apiUrl}/users/login`, { email, password })
       .pipe(
+        map(response => response.data),
         tap(user => {
           // Almacena el usuario y emite el nuevo estado
           this.storeUserData(user);
@@ -108,7 +109,8 @@ export class AuthService {
   }
 
   checkCurrentUser(): Observable<User> {
-    return this.http.get<User>(`${environment.apiUrl}/users/me`).pipe(
+    return this.http.get<UserResponse<User>>(`${environment.apiUrl}/users/me`).pipe(
+      map(response => response.data),
       tap(user => this.storeUserData(user)),
       catchError(() => {
         this.logout();

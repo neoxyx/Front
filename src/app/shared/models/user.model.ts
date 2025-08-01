@@ -5,3 +5,8 @@ export interface User {
   createdAt: string | Date;
   token?: string; // Opcional para JWT
 }
+
+export interface UserResponse<T> {
+  success: boolean;
+  data: T;
+}

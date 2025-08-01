@@ -32,21 +32,25 @@ export class ProfileComponent implements OnInit, OnDestroy {
   user: User | null = null;
   isLoading = true;
   private userSub!: Subscription;
+  name: string = '';
+  email: string = '';
+  createdAt: string | Date = '';
 
   constructor(
     private readonly authService: AuthService,
     private readonly router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
-    this.userSub = this.authService.currentUser$.subscribe({
-      next: (user) => {
-        this.user = user;
-        this.isLoading = false;
-      },
-      error: () => {
-        this.router.navigate(['/login']);
+    this.userSub = this.authService.currentUser$.subscribe(user => {
+      if (user) {
+        console.log('Usuario actual:', user);
+
+        this.name = user.name;
+        this.email = user.email;
+        this.createdAt = user.createdAt;
       }
+      this.isLoading = false;
     });
 
     // Carga inicial si no hay usuario

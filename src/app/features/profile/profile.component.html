@@ -3,7 +3,7 @@
     <div mat-card-avatar class="profile-avatar">
       <mat-icon>account_circle</mat-icon>
     </div>
-    <mat-card-title>{{ user?.name }}</mat-card-title>
+    <mat-card-title>{{ name }}</mat-card-title>
     <mat-card-subtitle>Perfil de usuario</mat-card-subtitle>
   </mat-card-header>
 
@@ -14,13 +14,13 @@
       <mat-list-item>
         <mat-icon matListItemIcon>email</mat-icon>
         <div matListItemTitle>Email</div>
-        <div matListItemLine>{{ user?.email }}</div>
+        <div matListItemLine>{{ email }}</div>
       </mat-list-item>
 
       <mat-list-item>
         <mat-icon matListItemIcon>calendar_today</mat-icon>
         <div matListItemTitle>Miembro desde</div>
-        <div matListItemLine>{{ user?.createdAt | date: 'longDate':'':'es' }}</div>
+        <div matListItemLine>{{ createdAt | date }}</div>
       </mat-list-item>
     </mat-list>
   </mat-card-content>
